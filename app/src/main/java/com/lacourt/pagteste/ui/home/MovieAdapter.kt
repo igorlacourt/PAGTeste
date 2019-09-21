@@ -48,10 +48,10 @@ class MovieAdapter(context: Context) : PagedListAdapter<Movie, MovieViewHolder>(
         holder.genreAndDate.text = "${movie?.genres?.get(0)}, ${movie?.release_date?.subSequence(0,4)}"
 
 
-        holder.poster.setImageBitmap(decodeImage(movie.encoded_poster))
-//        Picasso.get().load("https://image.tmdb.org/t/p/w185/${movie!!.poster_path}")
-//            .placeholder(R.drawable.clapperboard)
-//            .into(holder.poster)
+//        holder.poster.setImageBitmap(decodeImage(movie.encoded_poster))
+        Picasso.get().load("https://image.tmdb.org/t/p/w185/${movie!!.poster_path}")
+            .placeholder(R.drawable.clapperboard)
+            .into(holder.poster)
 
     }
 
@@ -82,7 +82,6 @@ class MovieAdapter(context: Context) : PagedListAdapter<Movie, MovieViewHolder>(
     }
 
     fun addGenres(genres: ArrayList<String>?, textView: TextView) {
-
         if (!genres.isNullOrEmpty()) {
             textView.text = genres.get(0)
             if (genres.size > 1) {
@@ -96,6 +95,8 @@ class MovieAdapter(context: Context) : PagedListAdapter<Movie, MovieViewHolder>(
 }
 
 class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    // We'll use this field to showcase matching the holder from the test.
+    var IsInTheMiddle: Boolean = false
     var poster = itemView.iv_poster
     var title = itemView.title
     var rate = itemView.rating
