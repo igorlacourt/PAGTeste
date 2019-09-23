@@ -1,8 +1,13 @@
 package com.lacourt.pagteste
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import com.lacourt.pagteste.network.Apifactory
+import junit.framework.AssertionFailedError
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.Test
 
+
+import org.junit.Assert.*
+import org.junit.runner.RunWith
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,7 +16,14 @@ import org.junit.jupiter.api.Test
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun moviesRequest_checkNumberOfItems() {
+        val result = Apifactory.tmdbApi.getMovies(AppConstants.LANGUAGE, 1).execute()
+
+        if(result.isSuccessful) {
+            val moviesCount = result.body()?.results?.size
+            assertThat(moviesCount, `is`(20))
+        } else {
+            AssertionFailedError("Request fail - ${result.code()}")
+        }
     }
 }
