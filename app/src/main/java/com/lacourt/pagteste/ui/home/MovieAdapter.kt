@@ -48,10 +48,10 @@ class MovieAdapter(context: Context) : PagedListAdapter<Movie, MovieViewHolder>(
         holder.genreAndDate.text = "${movie?.genres?.get(0)}, ${movie?.release_date?.subSequence(0,4)}"
 
 
-        holder.poster.setImageBitmap(decodeImage(movie.encoded_poster))
-//        Picasso.get().load("https://image.tmdb.org/t/p/w185/${movie!!.poster_path}")
-//            .placeholder(R.drawable.clapperboard)
-//            .into(holder.poster)
+//        holder.poster.setImageBitmap(decodeImage(movie.encoded_poster))
+        Picasso.get().load("https://image.tmdb.org/t/p/w185/${movie!!.poster_path}")
+            .placeholder(R.drawable.clapperboard)
+            .into(holder.poster)
 
     }
 

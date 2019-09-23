@@ -29,33 +29,40 @@ import java.lang.Exception
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     var context: Context
-    val movieDao = AppDatabase.getDatabase(application)!!.MovieDao() //Not sure if it should be here.
+    val movieDao =
+        AppDatabase.getDatabase(application)!!.MovieDao() //Not sure if it should be here.
 
-    private val moviesDescending: LiveData<PagedList<Movie>> = movieDao.dateDesc().toLiveData(pageSize = 50)
-    private val moviesAscending: LiveData<PagedList<Movie>> = movieDao.dateAsc().toLiveData(pageSize = 50)
+    private val moviesDescending: LiveData<PagedList<Movie>> =
+        movieDao.dateDesc().toLiveData(pageSize = 50)
+    private val moviesAscending: LiveData<PagedList<Movie>> =
+        movieDao.dateAsc().toLiveData(pageSize = 50)
 
     private var currentOrder = DATE_DESC
 
     private val dbMovies = movieDao.dateDesc().toLiveData(pageSize = 50)
     val movies = MediatorLiveData<PagedList<Movie>>()
+
     /*Remember:
      1. that the returned list cannot be mutable
-     2. the mutable livedata should by private(check in the video again)*/
+     2. the mutable livedata should be private(check in the video again)*/
     init {
-        Log.d("testorder", "----------------------------------- HomeViewModel init{...} called --------------------------------\n")
+        Log.d(
+            "testorder",
+            "----------------------------------- HomeViewModel init{...} called --------------------------------\n"
+        )
         context = application.applicationContext
 
-        movies.addSource(moviesDescending){ result ->
-            if(currentOrder == DATE_DESC) {
+        movies.addSource(moviesDescending) { result ->
+            if (currentOrder == DATE_DESC) {
                 Log.d("testorder", "addSource(moviesDescending)")
-                result?.let{ movies.value = it}
+                result?.let { movies.value = it }
             }
         }
 
-        movies.addSource(moviesAscending){ result ->
+        movies.addSource(moviesAscending) { result ->
             if (currentOrder == DATE_ASC) {
                 Log.d("testorder", "addSource(moviesAscending)")
-                result.let{ movies.value = it}
+                result.let { movies.value = it }
             }
         }
 
@@ -71,24 +78,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun rearrengeMovies(order: String) = when (order) {
-        DATE_ASC -> moviesAscending.value?.let{ movies.value = it}
-        else -> moviesDescending.value?.let{ movies.value = it}
+        DATE_ASC -> moviesAscending.value?.let { movies.value = it }
+        else -> moviesDescending.value?.let { movies.value = it }
 
-    }.also{ currentOrder = order}
+    }.also { currentOrder = order }
 
     fun getMoviesList(): LiveData<PagedList<Movie>> {
         return movieDao.dateDesc().toLiveData(pageSize = 50)
     }
-
-//    fun orderDateAsc(){
-//        moviePagedList = movieDao.dateAsc().toLiveData(pageSize = 50)
-//        Log.d("testorder", "orderDateAsc: list = ${moviePagedList?.value?.size}, dbCount = ${movieDao.getCount()}")
-//    }
-//
-//    fun orderDateDesc(){
-//        moviePagedList = movieDao.byDateAsc().toLiveData(50)
-//        Log.d("testorder", "orderDateDesc: list = ${moviePagedList?.value?.size}, dbCount = ${movieDao.getCount()}")
-//    }
 
     inner class FetchData() : AsyncTask<Void, Void, Array<out Void?>>() {
         var genresList: ArrayList<Genre>? = null
@@ -122,8 +119,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
                     movies.forEach { movie ->
                         val movieWithGenre = addGenreForEachMovie(movie)
-                        saveImages(movie)
-                        Log.d("testorder", "inserting ${movieWithGenre.title}, id=${movieWithGenre.id}")
+                        Log.d(
+                            "testorder",
+                            "inserting ${movieWithGenre.title}, id=${movieWithGenre.id}"
+                        )
                         movieDao.insert(movieWithGenre)
                     }
 
@@ -153,7 +152,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
+/*
         lateinit var target: Target
 
         private fun saveImages(movie: Movie) {
@@ -185,7 +184,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
             }
         }
+        */
     }
 
+
+    fun getMovieById(id: Int): Movie? {
+       return movieDao.getMovieById(id)
+    }
+
+    fun getTestString(): String = "Just a test"
 }
 
